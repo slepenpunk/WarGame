@@ -1,57 +1,55 @@
 class Television:
     """Simulator TV"""
-    channels = {'1': 'Первый Анал',
-                '2': 'Россия 88',
-                '3': 'Матч ТВ',
-                '4': 'Первый Анал',
-                '5': 'Спаси и Сохрани',
-                '6': 'ТНТ',
-                '7': 'СТС',
-                '8': 'Карусель',
-                '9': 'Brazzers Elite',
-                '10': '2x2',
-                '11': 'MTV', }
+    channels = {1: 'Первый кАнал',
+                2: 'Россия 88',
+                3: 'Матч ТВ',
+                4: 'Спаси и Сохрани',
+                5: 'ТНТ',
+                6: 'СТС',
+                7: 'Карусель',
+                8: 'Brazzers Elite',
+                9: '2x2',
+                10: 'MTV'}
 
     def __init__(self, volume=5):
         self.volume = volume
+        self.cur_channel = 1
 
-    @classmethod
-    def set_channel(cls, number):
+    def set_channel(self, number):
         """Choice a channel from available channels"""
-        if number in cls.channels:
+        if number in self.channels:
+            self.cur_channel = number
             return f'CHANNEL - {number}\n' \
-                   f'NAME - {cls.channels[number]}'
+                   f'NAME - {self.channels[number]}'
         else:
             return 'No such this channel!'
 
     def set_volume(self, level):
         """Change volume by press + or -"""
-        if self.volume in range(1, 10):
-            if level == '+':
-                self.volume += 1
-            elif level == '-':
-                self.volume -= 1
-            else:
-                return 'Unknown command!'
+        if level == '+' and self.volume < 10:
+            self.volume += 1
+        elif level == '-' and self.volume > 0:
+            self.volume -= 1
+        elif level not in ['+', '-']:
+            return 'Unknown command!'
         else:
-            if self.volume == 0:
-                if level == '+':
-                    self.volume += 1
-                else:
-                    return 'Volume range 0-10!'
-
-            elif self.volume == 10:
-                if level == '-':
-                    self.volume -= 1
-                else:
-                    return 'Volume range 0-10!'
-
+            return 'Range 0-10!'
         return f'Current volume - {self.volume}'
 
-    # def view_settings(self, channel):
-    #     rep = f'{self.volume}\n' \
-    #           f'{channel}'
-    #     return rep
+    def info(self):
+        rep = f'{self.volume}\n' \
+              f'{self.cur_channel}: {self.channels[self.cur_channel]}'
+        return rep
+
+    def add_channel(self, name):
+        if name not in self.channels.values():
+            chan = list(self.channels.keys())
+            chan.sort()
+            number = chan[-1]
+            self.channels[number + 1] = name
+        else:
+            return 'This channel is already exist!'
+        return f'Channel - {name} added!'
 
 
 def main():
@@ -62,18 +60,25 @@ def main():
         0 - Turn off
         1 - Change channel
         2 - Change volume
+        3 - View info
+        4 - Add channel
         ''')
         choice = input('Enter option: ')
         if choice == '0':
             print('Turn off')
             break
         elif choice == '1':
-            channel = input('Enter channel: ')
+            channel = int(input('Enter channel: '))
             ch = tv.set_channel(channel)
             print(ch)
         elif choice == '2':
             volume = input('Press +/- to change a volume: ')
             print(tv.set_volume(volume))
+        elif choice == '3':
+            print(tv.info())
+        elif choice == '4':
+            new_channel = input('Enter new name of channel: ')
+            print(tv.add_channel(new_channel))
         else:
             print('Unknown option!')
 
