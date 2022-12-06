@@ -17,6 +17,7 @@ class Television:
 
     @classmethod
     def set_channel(cls, number):
+        """Choice a channel from available channels"""
         if number in cls.channels:
             return f'CHANNEL - {number}\n' \
                    f'NAME - {cls.channels[number]}'
@@ -24,6 +25,7 @@ class Television:
             return 'No such this channel!'
 
     def set_volume(self, level):
+        """Change volume by press + or -"""
         if self.volume in range(1, 10):
             if level == '+':
                 self.volume += 1
