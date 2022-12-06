@@ -10,13 +10,13 @@ class Cats():
     colors = ['White', 'Black', 'Gray', 'Brown']
     moods = ('凸(￣ヘ￣)', '٩(ఠ益ఠ)۶', '(▽◕ ᴥ ◕▽)', '(´｡• ᵕ •｡)')
 
-    @staticmethod
-    def total_cats():
-        print('Total cats:', Cats._total)
+    @classmethod
+    def total_cats(cls):
+        print('Total cats:', cls._total)
 
-    @staticmethod
-    def add_colors(color):
-        new = Cats.colors.append(color)
+    @classmethod
+    def add_colors(cls, color):
+        new = cls.colors.append(color)
         return new
 
     @classmethod
@@ -27,9 +27,9 @@ class Cats():
         name = random.choice(cls.names)
         return cls(color, mood, age, name)
 
-    @staticmethod
-    def find_cat_by_name():
-        c_dict = Cats.cats_dict
+    @classmethod
+    def find_cat_by_name(cls):
+        c_dict = cls.cats_dict
         find_name = input('Enter name to find a cat: ').capitalize()
         if find_name in c_dict:
             for i in c_dict.values():
