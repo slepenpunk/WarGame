@@ -46,8 +46,7 @@ class Television:
                 else:
                     return 'Volume range 0-10!'
 
-        return self.volume
-
+        return f'Current volume - {self.volume}'
 
     # def view_settings(self, channel):
     #     rep = f'{self.volume}\n' \
@@ -75,6 +74,8 @@ def main():
         elif choice == '2':
             volume = input('Press +/- to change a volume: ')
             print(tv.set_volume(volume))
+        else:
+            print('Unknown option!')
 
 
 main()
