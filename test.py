@@ -11,8 +11,8 @@ class Television:
                 9: '2x2',
                 10: 'MTV'}
 
-    def __init__(self, volume=5):
-        self.volume = volume
+    def __init__(self):
+        self.volume = []
         self.cur_channel = 1
 
     def set_channel(self, number):
@@ -26,10 +26,10 @@ class Television:
 
     def set_volume(self, level):
         """Change volume by press + or -"""
-        if level == '+' and self.volume < 10:
-            self.volume += 1
-        elif level == '-' and self.volume > 0:
-            self.volume -= 1
+        if level == '+' and len(self.volume) < 10:
+            self.volume.append('|')
+        elif level == '-' and len(self.volume) > 0:
+            self.volume.pop()
         elif level not in ['+', '-']:
             return 'Unknown command!'
         else:
@@ -37,8 +37,8 @@ class Television:
         return f'Current volume - {self.volume}'
 
     def info(self):
-        rep = f'{self.volume}\n' \
-              f'{self.cur_channel}: {self.channels[self.cur_channel]}'
+        rep = f'VOLUME - {self.volume}\n' \
+              f'CHANNEL - {self.cur_channel}: {self.channels[self.cur_channel]}'
         return rep
 
     def add_channel(self, name):
