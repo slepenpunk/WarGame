@@ -12,7 +12,7 @@ class Television:
                 10: 'MTV'}
 
     def __init__(self):
-        self.volume = []
+        self.volume = ['|' for i in range(5)]
         self.cur_channel = 1
 
     def set_channel(self, number):
@@ -33,12 +33,13 @@ class Television:
         elif level not in ['+', '-']:
             return 'Unknown command!'
         else:
-            return 'Range 0-10!'
-        return f'Current volume - {self.volume}'
+            return '|' * len(self.volume) + '-' * (10 - len(self.volume))
+        return '|' * len(self.volume) + '-' * (10 - len(self.volume))
 
     def info(self):
-        rep = f'VOLUME - {self.volume}\n' \
-              f'CHANNEL - {self.cur_channel}: {self.channels[self.cur_channel]}'
+        rep = f"VOLUME  {'|' * len(self.volume) + '-' * (10 - len(self.volume))}\n" \
+              f"CHANNEL  {self.cur_channel} - {self.channels[self.cur_channel]}"
+
         return rep
 
     def add_channel(self, name):
