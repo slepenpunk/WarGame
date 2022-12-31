@@ -60,7 +60,6 @@ class Puppy:
         else:
             if unhappiness <= 25:
                 feel = "if you don't do anything now, I will die"
-
             else:
                 print('Сongratulations! You killed Deda;(')
                 sys.exit()
