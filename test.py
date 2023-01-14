@@ -1,17 +1,23 @@
-import sys
+import random
 
 
-class Puppy:
+class ZooFerm:
     """
-    Virtual tamagotchi
+    Virtual ZooFerm
     This class can work with private attributes
     """
+    critter_dict = {}
+    dead_critters = []
+    random_eat_words = ['Thank you!', 'It\'s so tasty!', 'MMMMM...']
+    random_play_words = ['Weeee!', 'It\'s so fun!', 'I\'m happy!']
+    total_deaths = 0
 
-    def __init__(self, name, happy=0, hungry=0):
+    def __init__(self, name, happy, hungry):
         self.__name = name
         self.__happy = happy
         self.__hungry = hungry
         self.__mood = 0
+        self.dead = True
 
     @property
     def hungry(self):
@@ -43,57 +49,87 @@ class Puppy:
             self.__hungry = 0
         self.__pass_time()
 
+    # This method is on, when doing some action
     def __pass_time(self):
         self.__hungry += 1
         self.__happy += 1
 
+    # Returns how critter feel self
     def moods(self):
         unhappiness = self.happy + self.hungry + self.mood
         if unhappiness <= 4:
             feel = 'great!'
         elif 4 < unhappiness <= 10:
-            feel = 'good!'
+            feel = 'good'
         elif 10 < unhappiness <= 16:
             feel = 'could be better...'
         elif 16 < unhappiness <= 22:
             feel = 'bad'
+        elif unhappiness <= 25:
+            feel = "if you don't do anything, I will die"
         else:
-            if unhappiness <= 25:
-                feel = "if you don't do anything now, I will die"
-            else:
-                print('Сongratulations! You killed Deda;(')
-                sys.exit()
+            feel = 'like dead:('
+            ZooFerm.total_deaths += 1
+            self.dead = False
+            print(f'{self.name} is dead!')
         return feel
 
+    # Print name and condition about critters
     def talk(self):
-        print(f'My name is {self.name}, now i feel {self.moods()}')
-        print('Happy', self.happy, 'Hungry', self.hungry)
-        if self.hungry >= 4:
-            print("i'm feeling hungry!")
-        if self.happy >= 4:
-            print("I'm bored...")
-        self.__pass_time()
+        if self.dead is True:
+            print(f'My name is {self.name}, now i feel {self.moods()}')
+            if self.hungry >= 4:
+                print('I\'m feel hungry...')
+            if self.happy >= 4:
+                print("I'm bored...")
+            self.__pass_time()
+        else:
+            ZooFerm.dead_critters.append(self)
 
+    # Gives food to critters
     def eat(self, data):
         self.hungry = data
-        print("It's so tasty!")
+        reaction = random.choice(ZooFerm.random_eat_words)
+        print(reaction)
 
-    def play(self):
-        self.happy = 4
-        print('YYYUUUEEE!!!')
+    # Play with critters
+    def play(self, data):
+        self.happy = data
+        reaction = random.choice(ZooFerm.random_play_words)
+        print(reaction)
+
+    def add_to_dict(self, critter):
+        ZooFerm.critter_dict[self] = critter
 
 
 def main():
-    set_name = input('Enter name: ')
-    p1 = Puppy(set_name)
+    start = True
+    while start is True:
+        try:
+            total = int(input('Welcome to your ZooFerm!\nHow many critters do you want add: '))
+            if total in range(1, 11):
+                for i in range(total):
+                    name = input('Enter name: ')
+                    random_happy = random.randint(0, 10)
+                    random_hungry = random.randint(0, 10)
+                    crit = ZooFerm(name, random_happy, random_hungry)
+                    crit.add_to_dict(crit)
+                    start = False
+            else:
+                print('In ZooFerm can be minimum 1 and maximum 10 critters!')
+        except ValueError:
+            print('Only numbers!')
     choice = None
     while choice != '0':
+        critters = ZooFerm.critter_dict
+        deaths = ZooFerm.total_deaths
         print(
             '''
             0 - Exit
             1 - Know your pet mood
             2 - Play with pet
             3 - Give the food
+            4 - View a dead animals
             '''
         )
         choice = input('Enter option: ')
@@ -101,18 +137,44 @@ def main():
             print('Bye!')
             break
         elif choice == '1':
-            p1.talk()
+            options = input('Talk to all or one animals: ').capitalize()
+            if options == 'One':
+                name = input('Enter name: ')
+                if name in critters.keys():
+                    critters[name].talk()
+                    print(f'Dead animals:{deaths}')
+                else:
+                    print('This animal is not on the Ferm!')
+            elif options == 'All':
+                if critters:
+                    for name in critters.keys():
+                        critters[name].talk()
+                    print(f'Dead animals:{deaths}')
+                else:
+                    print('You don\'t have animals on Ferm! ')
         elif choice == '2':
-            p1.play()
+            try:
+                time = int(input('Enter total time can you play with pet: '))
+                if time in range(0, 6):
+                    for i in critters:
+                        critters[i].play(time)
+                else:
+                    print('Max total play time - 5!')
+            except ValueError:
+                print('Only numbers!')
         elif choice == '3':
             try:
                 food = int(input('Enter total food can you give to pet: '))
                 if food in range(0, 6):
-                    p1.eat(food)
+                    for i in critters:
+                        critters[i].eat(food)
                 else:
                     print('Max total food given - 5!')
             except ValueError:
                 print('Only numbers!')
+        elif choice == '4':
+            print('That all dead animals:\n')
+            print(ZooFerm.dead_critters)
         else:
             print('Unknown command!')
 
