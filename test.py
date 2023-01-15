@@ -6,7 +6,7 @@ class ZooFerm:
     Virtual ZooFerm
     This class can work with private attributes
     """
-    critter_dict = {}
+    critter_list = []
     dead_critters = []
     random_eat_words = ['Thank you!', 'It\'s so tasty!', 'MMMMM...']
     random_play_words = ['Weeee!', 'It\'s so fun!', 'I\'m happy!']
@@ -98,8 +98,8 @@ class ZooFerm:
         reaction = random.choice(ZooFerm.random_play_words)
         print(reaction)
 
-    def add_to_dict(self, critter):
-        ZooFerm.critter_dict[self] = critter
+    def add_to_list(self, critter):
+        ZooFerm.critter_list.append(critter)
 
 
 def main():
@@ -113,7 +113,7 @@ def main():
                     random_happy = random.randint(0, 10)
                     random_hungry = random.randint(0, 10)
                     crit = ZooFerm(name, random_happy, random_hungry)
-                    crit.add_to_dict(crit)
+                    crit.add_to_list(crit)
                     start = False
             else:
                 print('In ZooFerm can be minimum 1 and maximum 10 critters!')
@@ -121,7 +121,7 @@ def main():
             print('Only numbers!')
     choice = None
     while choice != '0':
-        critters = ZooFerm.critter_dict
+        critters = ZooFerm.critter_list
         deaths = ZooFerm.total_deaths
         print(
             '''
@@ -140,15 +140,17 @@ def main():
             options = input('Talk to all or one animals: ').capitalize()
             if options == 'One':
                 name = input('Enter name: ')
-                if name in critters.keys():
-                    critters[name].talk()
-                    print(f'Dead animals:{deaths}')
-                else:
-                    print('This animal is not on the Ferm!')
+                found = False
+                for crit in critters:
+                    if name == crit.name:
+                        crit.talk()
+                        found = True
+                if not found:
+                    print('This animal not in Zooferm!')
             elif options == 'All':
                 if critters:
-                    for name in critters.keys():
-                        critters[name].talk()
+                    for crit in critters:
+                        crit.talk()
                     print(f'Dead animals:{deaths}')
                 else:
                     print('You don\'t have animals on Ferm! ')
@@ -173,8 +175,9 @@ def main():
             except ValueError:
                 print('Only numbers!')
         elif choice == '4':
-            print('That all dead animals:\n')
-            print(ZooFerm.dead_critters)
+            print('That all dead animals:')
+            for crit in ZooFerm.dead_critters:
+                print(crit.name)
         else:
             print('Unknown command!')
 
