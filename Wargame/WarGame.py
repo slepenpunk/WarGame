@@ -56,40 +56,56 @@ class Deck(OneCardGame.Deck):
 class Game:
     """Main process of the game"""
 
-    scores = []
-
     def __init__(self, names):
         self.players = []
         self.hands = []
-
-
         for name in names:
-            self.player = Player(name, 0)
+            player = Player(name, 0)
             self.hand = Hand()
-            self.players.append(self.player)
+            self.players.append(player)
             self.hands.append(self.hand)
         self.deck = Deck()
         self.deck.populate()
         self.deck.shuffle()
 
     def play(self):
-        print(self.deck)
+        max_score = {}
+        winner_score = None
+        winner_name = None
         self.deck.deal(self.hands)
-        print(self.deck)
         for player in self.players:
             card = self.hands.pop(0)
             player.score = card.total
-            print(player, card)
-        if self.players[0].score > self.players[1].score:
-            self.player.win()
-        else:
-            self.player.lose()
+            print(player.name, card)
+            max_score[player.name] = player.score
+            m_score = max(max_score.values())
+            w_name = max(max_score, key=max_score.get)
+            winner_score = m_score
+            winner_name = w_name
+        print(f'Winner - {winner_name}\n'
+              f'Score - {winner_score}')
 
-
-
+    
 def main():
-    game = Game(['1', '2'])
-    game.play()
+    print(f'Welcome to game "War"!\n'
+          f'Players draw one card and wins who has a highest card.')
+    again = None
+    while again != 'n':
+        try:
+            number = games.ask_number('How much players?(2-36): ')
+            if number not in range(2, 37):
+                raise IndexError
+            players = []
+            for i in range(number):
+                name = input('Enter name: ')
+                players.append(name)
+            game = Game(players)
+            game.play()
+            again = games.ask_yes_no('Do you want play again?(y/n): ')
+        except IndexError:
+            print('Range of players - from 2 to 36!')
+        except ValueError:
+            print('Incorrect data!')
 
 
 main()
